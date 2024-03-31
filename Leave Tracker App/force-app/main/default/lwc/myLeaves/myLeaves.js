@@ -1,5 +1,8 @@
 import { LightningElement, wire } from "lwc";
 import getMyLeaves from "@salesforce/apex/LeaveRequstController.getMyLeaves";
+import { ShowToastEvent } from "lightning/platformShowToastEvent";
+import Id from "@salesforce/user/Id";
+import { refreshApex } from "@salesforce/apex";
 const COLUMNS = [
   {
     label: "Request Id",
@@ -47,7 +50,10 @@ export default class MyLeaves extends LightningElement {
   columns = COLUMNS;
   myLeaves = [];
   myLeavesWireResult;
-
+  showModalPopup = false;
+  objectApiName = "LeaveRequest__c";
+  recordId = "";
+  currentUserId = Id;
   @wire(getMyLeaves)
   wiredMyLeaves(result) {
     this.myLeavesWireResult = result;
@@ -71,5 +77,49 @@ export default class MyLeaves extends LightningElement {
 
   get noRecordsFound() {
     return this.myLeaves.length === 0;
+  }
+  newRequestClickHandler() {
+    this.showModalPopup = true;
+    this.recordId = "";
+  }
+  popupCloseHandler() {
+    this.showModalPopup = false;
+  }
+  rowActionHandler(event) {
+    this.showModalPopup = true;
+    this.recordId = event.detail.row.Id;
+  }
+  successHandler() {
+    this.showModalPopup = false;
+    this.showToast("Data Saved Sucessfully");
+    refreshApex(this.wiredMyLeaves);
+  }
+  submitHandler(event) {
+    event.preventDefault();
+    const fields = { ...event.detail.fields };
+    fields.Status__c = "Pending";
+    if (new Date(fields.From_Date__c) > new Date(fields.To_Date__c)) {
+      this.showToast(
+        "From date should not exceed then to date",
+        "Error",
+        "error"
+      );
+    } else if (new Date() > new Date(fields.From_Date__c)) {
+      this.showToast(
+        "From date should not be less than today",
+        "Error",
+        "error"
+      );
+    } else {
+      this.refs.leaveRequestForm.submit(fields);
+    }
+  }
+  showToast(message, title = "success", variant = "success") {
+    const event = new ShowToastEvent({
+      title,
+      message,
+      variant
+    });
+    this.dispatchEvent(event);
   }
 }
