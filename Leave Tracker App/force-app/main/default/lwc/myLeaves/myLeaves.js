@@ -31,7 +31,7 @@ const COLUMNS = [
   },
   {
     label: "Manager Comment",
-    fieldName: "manager_Comment__c",
+    fieldName: "Manager_Comment__c",
     cellAttributes: { class: { fieldName: "cellClass" } }
   },
   {
@@ -92,7 +92,10 @@ export default class MyLeaves extends LightningElement {
   successHandler() {
     this.showModalPopup = false;
     this.showToast("Data Saved Sucessfully");
-    refreshApex(this.wiredMyLeaves);
+    refreshApex(this.myLeavesWireResult);
+
+    const refreshEvent = new CustomEvent("refreshleaverequest");
+    this.dispatchEvent(refreshEvent);
   }
   submitHandler(event) {
     event.preventDefault();
