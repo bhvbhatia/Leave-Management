@@ -1,4 +1,4 @@
-import { LightningElement , wire} from 'lwc';
+import { LightningElement , wire, api} from 'lwc';
 import PortfolioAssets from '@salesforce/resourceUrl/PortfolioAsset';
 import {getFieldValue, getRecord} from 'lightning/uiRecordApi'
 import FULLNAME  from '@salesforce/schema/Portfolio__c.Full_Name__c';
@@ -10,10 +10,12 @@ import DESIGNATION from '@salesforce/schema/Portfolio__c.Designation__c';
 
 export default class PortfolioBanner extends LightningElement {
 
-	linkedinUrl = 'https://www.linkedin.com/in/bhavy-bhatiya-175292150/';
-    githubUrl = 'https://github.com/bhvbhatia'
-    trailheadUrl = 'https://www.salesforce.com/trailblazer/bhvbhatia12'
-    blogUrl = 'https://www.google.com/'
+	@api recordId //= 'a04gL00000ASPDpQAP'
+
+	@api linkedinUrl //= 'https://www.linkedin.com/in/bhavy-bhatiya-175292150/';
+    @api githubUrl // = 'https://github.com/bhvbhatia'
+    @api trailheadUrl //= 'https://www.salesforce.com/trailblazer/bhvbhatia12'
+    @api blogUrl //= 'https://www.google.com/'
 
 
 	userPic = `${PortfolioAssets}/PortfolioAssets/userPic.png`;
@@ -23,7 +25,7 @@ export default class PortfolioBanner extends LightningElement {
     trailhead = `${PortfolioAssets}/PortfolioAssets/Social/trailhead1.svg`
     blog = `${PortfolioAssets}/PortfolioAssets/Social/blogger.svg`;
 
-	recordId = 'a04gL00000ASPDpQAP'
+	
 	
 	@wire(getRecord, {recordId:'$recordId' , fields: [FULLNAME,COMPANY_NAME,COMPANY_LOCATION,DESIGNATION]})
 	portfolioData
