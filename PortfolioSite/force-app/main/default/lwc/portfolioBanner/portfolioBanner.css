@@ -1,5 +1,5 @@
 .banner{
-    background: #f6c403;
+    background: #318ce7;
     min-height: 300px;
     text-align: center;
     padding: 32px 16px;
@@ -15,7 +15,7 @@
 }
 .designation, .location{
     font-size: 24px;
-    color: #243763;
+    color: #fcfdff;
 }
 .social-icon{
     height: 40px;
